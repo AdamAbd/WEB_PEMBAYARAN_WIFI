@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+use Illuminate\Foundation\Console\Kernel;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+define('LARAVEL_START', microtime(true));
+
+// Register the Composer autoloader...
+require __DIR__.'/vendor/autoload.php';
+
+// Bootstrap Laravel application...
+$app = require __DIR__.'/bootstrap/app.php';
+
+// Jalankan command melalui Kernel Console
+$status = $app->make(Kernel::class)->handle(
+    $input = new ArgvInput,
+    new ConsoleOutput
+);
+
+exit($status);
