@@ -18,7 +18,7 @@
         {{-- Form generate tagihan --}}
         <form action="{{ route('tagihan.generate') }}" method="POST" class="mb-4">
             @csrf
-            <div class="row">
+            <div class="row g-3">
                 <div class="col-md-3">
                     <label for="bulan">Pilih Bulan</label>
                     <select name="bulan" id="bulan" class="form-control" required>
@@ -39,7 +39,7 @@
                         @endfor
                     </select>
                 </div>
-                <div class="col-md-3 align-self-end">
+                <div class="col-md-3 mt-2 mt-md-0 d-grid align-self-end">
                     <button type="submit" class="btn btn-primary">Generate Tagihan Bulanan</button>
                 </div>
             </div>
@@ -47,7 +47,7 @@
 
         {{-- Filter tagihan --}}
         <form method="GET" action="{{ route('tagihan.index') }}" class="mb-4">
-            <div class="row">
+            <div class="row g-3">
                 <div class="col-md-3">
                     <label for="filter_bulan">Filter Bulan</label>
                     <select name="bulan" id="filter_bulan" class="form-control">
@@ -85,8 +85,8 @@
                     </select>
                 </div>
 
-                <div class="col-md-3 align-self-end">
-                    <button type="submit" class="btn btn-secondary">Filter</button>
+                <div class="col-md-3 mt-2 mt-md-0 d-grid align-self-end">
+                    <button type="submit" class="btn btn-secondary mb-2">Filter</button>
                     <a href="{{ route('tagihan.index') }}" class="btn btn-light">Reset</a>
                 </div>
             </div>
@@ -145,6 +145,5 @@
         <div class="d-flex justify-content-center">
             {{ $bills->links('vendor.pagination.bootstrap-4') }}
         </div>
-
     </div>
 @endsection

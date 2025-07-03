@@ -5,7 +5,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-wifi"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">WiFi RW 01</div>
+        <div class="sidebar-brand-text mx-3">WiFi RW</div>
     </a>
 
     <hr class="sidebar-divider my-0">
@@ -24,7 +24,6 @@
             </a>
         @endif
     </li>
-
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -61,16 +60,18 @@
         </li>
     @endif
 
-    <!-- Logout -->
+    <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Logout -->
     <li class="nav-item">
-        <form method="POST" action="{{ route('logout') }}">
+        <form method="POST" action="{{ route('logout') }}" id="logout-form">
             @csrf
-            <button type="submit" class="nav-link text-white"
-                style="background: none; border: none; width: 100%; text-align: left;">
-                <i class="fas fa-sign-out-alt"></i>
-                <span style="margin-left: 0.5rem;">Keluar</span>
-            </button>
+            <a href="#" class="nav-link"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fas fa-sign-out-alt fa-fw"></i>
+                <span>Keluar</span>
+            </a>
         </form>
     </li>
 

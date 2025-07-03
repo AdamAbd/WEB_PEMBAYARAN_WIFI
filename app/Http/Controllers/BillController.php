@@ -79,14 +79,21 @@ class BillController extends Controller
             return redirect()->route('user.dashboard')->with('info', 'Tagihan sudah dibayar.');
         }
 
+        // Konfigurasi Midtrans
         Config::$serverKey = config('services.midtrans.server_key');
         Config::$isProduction = config('services.midtrans.is_production');
         Config::$isSanitized = true;
         Config::$is3ds = true;
 
+        // Buat order_id unik dan simpan ke database
+        $orderId = 'ORDER-' . $bill->id . '-' . time();
+        $bill->order_id = $orderId;
+        $bill->save();
+
+        // Buat parameter transaksi
         $params = [
             'transaction_details' => [
-                'order_id' => 'ORDER-' . $bill->id . '-' . time(),
+                'order_id' => $orderId,
                 'gross_amount' => $bill->amount,
             ],
             'customer_details' => [
@@ -95,6 +102,7 @@ class BillController extends Controller
             ],
         ];
 
+        // Dapatkan Snap Token
         $snapToken = Snap::getSnapToken($params);
 
         return view('user.checkout', compact('bill', 'snapToken'));

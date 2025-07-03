@@ -58,7 +58,12 @@ class UserController extends Controller
     }
     public function riwayat()
     {
-        $transactions = Auth::user()->transactions()->latest()->get();
+        $transactions = Auth::user()
+            ->transactions()
+            ->with('bill') // Tambahkan ini
+            ->latest()
+            ->get();
+
         return view('user.riwayat', compact('transactions'));
     }
 

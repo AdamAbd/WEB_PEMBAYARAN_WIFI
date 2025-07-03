@@ -72,7 +72,6 @@ Route::get('/update-bulan-null', function () {
     return "Sukses update $updated data tagihan yang bulan-nya null.";
 });
 
-Route::post('/midtrans/callback', [MidtransCallbackController::class, 'handle']);
 
 // 📤 Export Transaksi
 Route::get('/admin/transaksi/export', [TransactionExportController::class, 'export'])->name('transactions.export');
