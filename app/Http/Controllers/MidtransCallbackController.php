@@ -6,21 +6,33 @@ use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\Bill;
 use Illuminate\Support\Facades\Log;
+use Midtrans\Config;
+use Midtrans\Notification;
 
 class MidtransCallbackController extends Controller
 {
     public function handleCallback(Request $request)
     {
-        $payload = $request->all();
+        // ✅ Konfigurasi Midtrans
+        Config::$serverKey = config('midtrans.serverKey'); // ambil dari config
+        Config::$isProduction = true; // ganti ke false kalau testing
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
 
-        Log::info('Midtrans Callback Payload:', $payload);
+        // ✅ Ambil notifikasi dari Midtrans (otomatis validasi & parsing)
+        $notification = new Notification();
 
-        $orderId = $payload['order_id'];
-        $statusCode = $payload['status_code'];
-        $transactionStatus = $payload['transaction_status'];
-        $fraudStatus = $payload['fraud_status'] ?? null;
+        $transactionStatus = $notification->transaction_status;
+        $orderId = $notification->order_id;
+        $fraudStatus = $notification->fraud_status;
 
-        // ✅ Ganti pencarian bill berdasarkan order_id
+        Log::info('Midtrans Callback Received', [
+            'order_id' => $orderId,
+            'transaction_status' => $transactionStatus,
+            'fraud_status' => $fraudStatus,
+        ]);
+
+        // ✅ Cari Bill berdasarkan order_id
         $bill = Bill::where('order_id', $orderId)->first();
 
         if (!$bill) {
@@ -28,7 +40,7 @@ class MidtransCallbackController extends Controller
             return response()->json(['message' => 'Bill not found'], 404);
         }
 
-        // ✅ Update status berdasarkan status transaksi dari Midtrans
+        // ✅ Proses status transaksi
         if (in_array($transactionStatus, ['capture', 'settlement'])) {
             $bill->status = 'paid';
             $bill->save();
@@ -42,9 +54,13 @@ class MidtransCallbackController extends Controller
                     'paid_at' => now(),
                 ]
             );
+
+            Log::info("Pembayaran berhasil untuk order_id: $orderId");
         } elseif (in_array($transactionStatus, ['expire', 'cancel', 'deny'])) {
             $bill->status = 'failed';
             $bill->save();
+
+            Log::info("Pembayaran gagal untuk order_id: $orderId - Status: $transactionStatus");
         }
 
         return response()->json(['message' => 'Callback handled'], 200);
