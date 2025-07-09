@@ -56,6 +56,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/tagihan/generate', [BillController::class, 'generate'])->name('tagihan.generate');
 });
 
+//callback
+Route::post('midtrans/callback', [MidtransCallbackController::class, 'handleCallback'])
+     ->name('midtrans.callback');
+
 // 💳 Transaksi
 Route::get('/transaksi', [App\Http\Controllers\TransactionController::class, 'index'])
     ->name('transaksi.index')

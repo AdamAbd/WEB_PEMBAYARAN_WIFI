@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            'midtrans/callback',
+        ]);
         // --- Web group (session, cookies, csrf, dsb.) ---
         $middleware->group('web', [
             EncryptCookies::class,
